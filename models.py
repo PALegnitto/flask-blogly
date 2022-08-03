@@ -1,5 +1,13 @@
 """Models for Blogly."""
-from flask_sqlalchemy import SQLAlchemy db = SQLAlchemy()
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
+def connect_db(app):
+        """connect to database"""
+
+        db.app = app
+        db.init_app(app)
 
 class User(db.Model):
     __tablename__ = "users"
