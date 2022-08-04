@@ -135,3 +135,41 @@ def show_a_post(post_id):
     user = post.user
 
     return render_template("post-details.html", post = post, user = user)
+
+
+@app.get("/posts/<int:post_id>/edit")
+def show_edit_form(post_id):
+    """Show form to edit a post, and to cancel (back to user page)"""
+
+    post = Post.query.get_or_404(post_id)
+    user = post.user
+
+    return render_template("post-edit.html", post = post, user = user )
+
+
+@app.post("/posts/<int:post_id>/edit")
+def update_post(post_id):
+    """Handle editing of a post. Redirect back to the post view"""
+
+    post = Post.query.get_or_404(post_id)
+
+    post.title = request.form["post-title"]
+    post.content = request.form["post-content"]
+
+    db.session.add(post)
+    db.session.commit()
+
+    return redirect(f"/posts/{post_id}")
+
+@app.post("/posts/<int:post_id>/delete")
+def delete_post(post_id):
+    """Delete a post"""
+
+    post = Post.query.get_or_404(post_id)
+    user = post.user
+    db.session.delete(post)
+    db.session.commit()
+
+    flash("Post Deleted")
+
+    return redirect(f"/users/{user.id}")
