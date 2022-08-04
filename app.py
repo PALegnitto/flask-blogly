@@ -1,7 +1,7 @@
 """Blogly application."""
 
 from flask import Flask, render_template, redirect, request, flash
-from models import db, connect_db, User
+from models import db, connect_db, User, Post
 from flask_debugtoolbar import DebugToolbarExtension
 
 app = Flask(__name__)
@@ -16,6 +16,9 @@ toolbar = DebugToolbarExtension(app)
 connect_db(app)
 db.create_all()
 
+
+
+################### Routes for User #############################
 @app.get("/")
 def redirect_to_users():
     """Redirects to user listing"""
@@ -60,6 +63,7 @@ def show_user_detail(user_id):
 
     user = User.query.get_or_404(user_id)
 
+
     return render_template("user-details.html", user = user)
 
 @app.get("/users/<int:user_id>/edit")
@@ -97,5 +101,29 @@ def perform_user_delete(user_id):
     flash("User Deleted")
 
     return redirect("/users")
+
+################# Routes for Post #########################
+
+@app.get("/users/<int:user_id>/posts/new")
+def show_post_form(user_id):
+
+    user = User.query.get_or_404(user_id)
+    # posts = Post.user
+
+    return render_template("new-post-form.html",user = user, posts = posts)
+
+@app.post("/users/<int:user_id>/posts/new")
+def submit_new_post(user_id):
+
+    post_title = request.form["post-title"]
+    post_content = request.form["post-content"]
+
+    new_post = Post(title = post_title, content = post_content, user_id = user_id)
+
+    db.session.add(new_post)
+    db.session.commit()
+
+    return redirect(f"/users/{user_id}")
+
 
 

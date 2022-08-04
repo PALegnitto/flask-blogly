@@ -12,4 +12,16 @@
   <button formmethod="post" formaction="/users/{{user.id}}/delete">Delete</button>
 </form>
 
+<h2>Posts</h2>
+
+<ul>
+  {% for post in posts %}
+
+  <li><a href="#">{{post.title}}</a></li>
+
+{% endfor %}
+</ul>
+<form>
+  <button formaction="/users/{{user.id}}/posts/new" formmethod="GET">Add Post</button>
+</form>
 {% endblock %}
