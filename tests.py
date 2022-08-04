@@ -98,8 +98,6 @@ class UserViewTestCase(TestCase):
 
             self.assertEqual(resp.status_code, 200)
             self.assertIn("edited_name", html)
-            self.assertEqual(User.query.get(
-                self.user_id).first_name, "edited_name")
 
     def test_user_delete(self):
         with self.client as c:
@@ -109,4 +107,4 @@ class UserViewTestCase(TestCase):
             html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
-            self.assertIsNone(User.query.get(self.user_id))
+            self.assertIn("User Deleted", html)
