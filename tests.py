@@ -1,7 +1,9 @@
 from unittest import TestCase
 
 from app import app, db
-from models import DEFAULT_IMAGE_URL, User
+from models import User
+
+# DEFAULT_IMAGE_URL
 
 # Let's configure our app to use a different database for tests
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///blogly_test"
@@ -53,6 +55,7 @@ class UserViewTestCase(TestCase):
         # value of their id, since it will change each time our tests are run.
         self.user_id = test_user.id
 
+
     def tearDown(self):
         """Clean up any fouled transaction."""
         db.session.rollback()
@@ -64,3 +67,18 @@ class UserViewTestCase(TestCase):
             html = resp.get_data(as_text=True)
             self.assertIn("test_first", html)
             self.assertIn("test_last", html)
+
+    def test_add_user(self):
+        with self.client as c:
+            resp = c.post('/users/new',
+                data={"first-name": "test_third", "last-name": "test_last",
+                     "img": None }, follow_redirects = True)
+
+            html = resp.get_data(as_text= True)
+
+            self.assertIsNotNone(User.query.get(self.user_id + 2))
+            self.assertEqual(resp.status_code,200)
+            self.assertIn('test_third',html)
+
+
+
