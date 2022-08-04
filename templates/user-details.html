@@ -1,4 +1,4 @@
-{% extends from 'base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}{{user.first_name}} {{user.last_name}}{% endblock %}
 
@@ -6,7 +6,10 @@
 
 <img src="{{user.image_url}}" alt="profile picture">
 <h1>{{user.first_name}} {{user.last_name}}</h1>
-<a href="user/{{user.id}}/edit">Edit</a>
-<a href="user/{{user.id}}/delete">Delete</a>
 
-{% end block%}
+<form>
+  <button formmethod="get" formaction="/users/{{user.id}}/edit">Edit</button>
+  <button formmethod="post" formaction="/users/{{user.id}}/delete">Delete</button>
+</form>
+
+{% endblock %}
