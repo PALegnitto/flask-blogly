@@ -98,13 +98,15 @@ class UserViewTestCase(TestCase):
 
             self.assertEqual(resp.status_code, 200)
             self.assertIn("edited_name", html)
-            self.assertEqual(User.query.get(self.user_id).first_name, "edited_name")
+            self.assertEqual(User.query.get(
+                self.user_id).first_name, "edited_name")
 
     def test_user_delete(self):
         with self.client as c:
-            resp = c.post(f'/users/{self.user_id}/delete', follow_redirects = True)
+            resp = c.post(f'/users/{self.user_id}/delete',
+                          follow_redirects=True)
 
-            html = resp.get_data(as_text = True)
+            html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
             self.assertIsNone(User.query.get(self.user_id))
