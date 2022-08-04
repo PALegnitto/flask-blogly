@@ -62,9 +62,10 @@ def show_user_detail(user_id):
     """Show information about a single user"""
 
     user = User.query.get_or_404(user_id)
+    posts = user.posts
 
 
-    return render_template("user-details.html", user = user)
+    return render_template("user-details.html", user = user, posts = posts)
 
 @app.get("/users/<int:user_id>/edit")
 def show_user_edit(user_id):
@@ -106,14 +107,15 @@ def perform_user_delete(user_id):
 
 @app.get("/users/<int:user_id>/posts/new")
 def show_post_form(user_id):
+    """Show form for a new post"""
 
     user = User.query.get_or_404(user_id)
-    # posts = Post.user
 
-    return render_template("new-post-form.html",user = user, posts = posts)
+    return render_template("new-post-form.html",user = user)
 
 @app.post("/users/<int:user_id>/posts/new")
 def submit_new_post(user_id):
+    """Submit a new post to the posts table return to user details page"""
 
     post_title = request.form["post-title"]
     post_content = request.form["post-content"]
@@ -125,5 +127,11 @@ def submit_new_post(user_id):
 
     return redirect(f"/users/{user_id}")
 
+@app.get("/posts/<int:post_id>")
+def show_a_post(post_id):
+    """Show an individual post"""
 
+    post = Post.query.get_or_404(post_id)
+    user = post.user
 
+    return render_template("post-details.html", post = post, user = user)
