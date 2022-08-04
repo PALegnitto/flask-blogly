@@ -41,9 +41,9 @@ def show_add_form():
 def add_user():
     """Add user to database and redirect to user list"""
 
-    first_name = request.form.get("first-name")
-    last_name = request.form.get("last-name")
-    image_url = request.form.get("img")
+    first_name = request.form["first-name"]
+    last_name = request.form["last-name"]
+    image_url = request.form["img"]
 
     new_user = User(first_name = first_name, last_name = last_name, image_url = image_url)
 
@@ -75,9 +75,9 @@ def perform_user_edit(user_id):
 
     user = User.query.get(user_id)
 
-    user.first_name = request.form.get("first-name")
-    user.last_name = request.form.get("last-name")
-    user.image_url = request.form.get("img")
+    user.first_name = request.form["first-name"]
+    user.last_name = request.form["last-name"]
+    user.image_url = request.form["img"]
 
     db.session.add(user)
     db.session.commit()
