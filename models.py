@@ -29,5 +29,8 @@ class User(db.Model):
             )
 
     image_url = db.Column(
-            db.Text
+            db.Text,
+            default = (
+                'https://i.etsystatic.com/8780787/r/il/8c7754/3374382974/il_1588xN.3374382974_dxzc.jpg'
+            )
             )
