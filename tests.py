@@ -55,7 +55,6 @@ class UserViewTestCase(TestCase):
         # value of their id, since it will change each time our tests are run.
         self.user_id = test_user.id
 
-
     def tearDown(self):
         """Clean up any fouled transaction."""
         db.session.rollback()
@@ -71,14 +70,41 @@ class UserViewTestCase(TestCase):
     def test_add_user(self):
         with self.client as c:
             resp = c.post('/users/new',
-                data={"first-name": "test_third", "last-name": "test_last",
-                     "img": None }, follow_redirects = True)
+                          data={"first-name": "test_third", "last-name": "test_last",
+                                "img": None}, follow_redirects=True)
 
-            html = resp.get_data(as_text= True)
+            html = resp.get_data(as_text=True)
 
             self.assertIsNotNone(User.query.get(self.user_id + 2))
-            self.assertEqual(resp.status_code,200)
-            self.assertIn('test_third',html)
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('test_third', html)
 
+    def test_user_details(self):
+        with self.client as c:
+            resp = c.get(f"/users/{self.user_id}")
 
+            html = resp.get_data(as_text=True)
 
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('button formmethod="get"', html)
+
+    def test_user_edit(self):
+        with self.client as c:
+            resp = c.post(f'/users/{self.user_id}/edit',
+                          data={"first-name": "edited_name", "last-name": "last_one",
+                                "img": None}, follow_redirects=True)
+
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn("edited_name", html)
+            self.assertEqual(User.query.get(self.user_id).first_name, "edited_name")
+
+    def test_user_delete(self):
+        with self.client as c:
+            resp = c.post(f'/users/{self.user_id}/delete', follow_redirects = True)
+
+            html = resp.get_data(as_text = True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIsNone(User.query.get(self.user_id))
